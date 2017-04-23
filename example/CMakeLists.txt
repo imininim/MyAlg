@@ -1,8 +1,12 @@
-﻿include_directories()
+#include路径
+include_directories(/usr/local/mioji/include/)
+include_directories(${PROJECT_SOURCE_DIR})
+include_directories(.)
+#链接查找路径
+link_directories(.)
+LINK_DIRECTORIES(bin)
+#添加可执行程序test
+add_executable(test test.cpp)
+target_link_libraries(test common graph)
+install(TARGETS test DESTINATION bin)
 
-SET(TEST_SRC main.cpp)
-
-ADD_EXECUTABLE(test ${TEST_SRC})
-TARGET_LINK_LIBRARIES(test libcommon)
-TARGET_LINK_LIBRARIES(test libgraph)
-TARGET_LINK_LIBRARIES(test libstr)

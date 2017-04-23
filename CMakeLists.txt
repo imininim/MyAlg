@@ -1,31 +1,25 @@
-PROJECT(MyAlg)
-#ADD_SUBDIRECTORY(example)
-INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR})
-INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/common)
-INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/graph)
-INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/str)
-SET(CMAKE_CXX_COMPILER "g++")
+cmake_minimum_required(VERSION 2.8)
+#工程名
+project(PPViewChat C CXX)
+#开启编译命令行调试
+set(CMAKE_VERBOSE_MAKEFILE on)
+set(CMAKE_CXX_COMPILER "g++")
 #设置全局编译参数
-SET(CMAKE_CXX_FLAGS "-D_FILE_OFFSET_BITS=64 -Wall -lpthread -std=c++0x")
-#SET(CMAKE_CXX_FLAGS "-D_FILE_OFFSET_BITS=64 -w -g -lpthread -std=c++0x")
+#set(CMAKE_CXX_FLAGS "-D_FILE_OFFSET_BITS=64 -Wall -g -lpthread -std=c++0x")
+set(CMAKE_CXX_FLAGS "-D_FILE_OFFSET_BITS=64 -w -g -lpthread -std=c++0x")
+set(CMAKE_CXX_FLAGS_DEBUG "-g")
+set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG")
+
+message(STATUS "CMAKE_CXX_FLAGS = " ${CMAKE_CXX_FLAGS})
 
 
-SET(COMMON_SRC common/define.cpp)
-SET(GRAPH_SRC graph/NetFlow.cpp graph/MST.cpp)
-SET(STR_SRC str/KMP.cpp)
-SET(TEST_SRC example/main.cpp)
+#添加工程子目录
+add_subdirectory(graph)
+add_subdirectory(common)
+add_subdirectory(example)
+#add_subdirectory(Grid)
+#add_subdirectory(SA)
 
-ADD_LIBRARY(libcommon ${COMMON_SRC})
-ADD_LIBRARY(libgraph ${GRAPH_SRC})
-ADD_LIBRARY(libstr ${STR_SRC})
 
-#ADD_SUBDIRECTORY(src bin)
-#ADD_SUBDIRECTORY(libcommon lib)
-#ADD_SUBDIRECTORY(libgraph lib)
-#ADD_SUBDIRECTORY(libstr lib)
-
-ADD_EXECUTABLE(test ${TEST_SRC})
-TARGET_LINK_LIBRARIES(test libcommon)
-TARGET_LINK_LIBRARIES(test libgraph)
-TARGET_LINK_LIBRARIES(test libstr)
-
+#复制当前编译用的common库到本地
+#install(DIRECTORY /usr/local/mioji/lib/ DESTINATION lib)
