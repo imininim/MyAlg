@@ -5,8 +5,8 @@ project(PPViewChat C CXX)
 set(CMAKE_VERBOSE_MAKEFILE on)
 set(CMAKE_CXX_COMPILER "g++")
 #设置全局编译参数
-#set(CMAKE_CXX_FLAGS "-D_FILE_OFFSET_BITS=64 -Wall -g -lpthread -std=c++0x")
-set(CMAKE_CXX_FLAGS "-D_FILE_OFFSET_BITS=64 -w -g -lpthread -std=c++0x")
+set(CMAKE_CXX_FLAGS "-D_FILE_OFFSET_BITS=64 -Wall -g -lpthread -std=c++0x")
+#set(CMAKE_CXX_FLAGS "-D_FILE_OFFSET_BITS=64 -w -g -lpthread -std=c++0x")
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG")
 
@@ -16,6 +16,7 @@ message(STATUS "CMAKE_CXX_FLAGS = " ${CMAKE_CXX_FLAGS})
 #添加工程子目录
 add_subdirectory(graph)
 add_subdirectory(common)
+add_subdirectory(str)
 add_subdirectory(example)
 #add_subdirectory(Grid)
 #add_subdirectory(SA)
