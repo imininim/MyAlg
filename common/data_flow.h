@@ -18,6 +18,8 @@ typedef LockQueue<DataPtr> OutputQueue;
 
 class Data {
 public:
+        virtual bool DoWork() { return true; };
+        virtual void DoCollect() {};
 };
 
 class DataWorker: public Thread {
@@ -29,9 +31,6 @@ public:
     DataWorker(InputQueue &inputQueue, OutputQueue &outputQueue):
     m_inputQueue(inputQueue), m_outputQueue(outputQueue), m_isComplate(false) {}
     void SetComplate(bool isComplate);
-    virtual bool DoWork(DataPtr data) {
-        return true;
-    }
     virtual void Run();
 };
 
@@ -43,9 +42,6 @@ public:
     DataCollecter(OutputQueue &outputQueue):m_outputQueue(outputQueue), m_isComplate(false) {}
     void SetComplate(bool isComplate) {
         m_isComplate = isComplate;
-    }
-    virtual bool DoWork(DataPtr data) {
-        return true;
     }
     virtual void Run();
 };
@@ -63,9 +59,16 @@ public:
     int m_collecternum;
 public:
     DataFlow():m_inputnum(1), m_outputnum(1),m_workernum(1), m_collecternum(1) {}
+    DataFlow(int inputnum, int outputnum, int workernum, int collecternum):m_inputnum(inputnum), m_outputnum(outputnum),m_workernum(workernum), m_collecternum(collecternum) {}
     ~DataFlow() {
         Clear();
     }
+
+        void Put(DataPtr data) {
+                static int n = 0;
+                m_inputQueues[n%m_inputnum]->push(data);
+                n++;
+        }
     void SetCollecterComplate() {
         for (int i = 0; i < m_collecternum; ++i) {
             m_collectList[i]->SetComplate(true);
