@@ -1,4 +1,4 @@
-#include "thread_pool.h"
+#include "data_flow.h"
 #include <iostream>
 #include <unistd.h>
 using namespace std;
@@ -21,7 +21,7 @@ void DataWorker::Run() {
         }
         auto data = m_inputQueue.front();
         do {
-            if (DoWork(data)) {
+            if (data->DoWork()) {
                 m_outputQueue.push(data);
             }
         } while(0);
@@ -31,6 +31,7 @@ void DataWorker::Run() {
 }
 
 void DataCollecter::Run() {
+        cerr << "in datacollect" << endl;
     int cnt = 0;
     while (1) {
         if (m_outputQueue.empty()) {
@@ -41,11 +42,12 @@ void DataCollecter::Run() {
             continue;
         }
         auto data = m_outputQueue.front();
-        DoWork(data);
+        data->DoCollect();
         m_outputQueue.pop();
         if (cnt % 100000 == 0) {
-            cerr << cnt << endl;
+            cerr << "collect " << cnt << endl;
         }   
+                cnt ++;
     }   
     cerr << "insert end" << endl;
     return;
@@ -85,6 +87,7 @@ bool DataFlow::Init() {
         m_collectList.push_back(new DataCollecter(*(m_outputQueues[i%m_outputnum])));
     }
     UserInit();
+        return true;
 }
 void DataFlow::Start() {
     for (int i = 0; i < m_workernum; ++i) {
@@ -93,12 +96,14 @@ void DataFlow::Start() {
     for (int i = 0; i < m_collecternum; ++i) {
         m_collectList[i]->Start();
     }
-    UserInit();
+    UserStart();
 }
 void DataFlow::Join() {
+    SetWorkerComplate();
     for (int i = 0; i < m_workernum; ++i) {
         m_workList[i]->Join();
     }
+    SetCollecterComplate();
     for (int i = 0; i < m_collecternum; ++i) {
         m_collectList[i]->Join();
     }
